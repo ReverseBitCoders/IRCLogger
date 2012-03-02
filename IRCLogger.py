@@ -28,16 +28,17 @@ class IRCLogBot:
     print "Joining channel for logging"
     self.irc_send_command("JOIN %s" % self.LOGCHANNEL)
 
-  def irc_login(self, nick='RHLogger', username='LogBot', hostname='ReverseHack', servername='ReverseHack', realname='RHIRCBot'):
+  def irc_login(self, username='LogBot', hostname='ReverseHack', servername='ReverseHack', realname='RHIRCBot'):
     print "Logging in"
     self.irc_send_command("USER %s %s %s %s" % (username, hostname, servername, realname))
-    self.irc_send_command("NICK %s" % nick)
+    self.irc_send_command("NICK %s" % self.NICKNAME)
 
   def irc_logout(self, logoutmsg = None):
     self.irc_send_command("QUIT %s" % logoutmsg)
 
   def start_logging(self):
 
+    # Register Ctrl+C handler so that we can gracefully logout
     signal.signal(signal.SIGINT, self.stop_logging)
 
     while(1):
@@ -46,6 +47,7 @@ class IRCLogBot:
       msg = string.split(data)
       #print msg
 
+      # Handle Alive state
       if msg[0] == "PING":
         self.irc_send_command("PONG %s" % msg[1])
 
@@ -55,6 +57,7 @@ class IRCLogBot:
         self.privmsg = ":Heya there! I'm LoggerBot, Do Not Disturb Me!"
         self.irc_send_command("PRIVMSG %s %s" % (self.nick_name, self.privmsg))
 
+      # Actual logging of channel
       if msg[1] == "PRIVMSG" and msg[2] == self.LOGCHANNEL:
         self.logfile = open("/tmp/channel.log", "a+")
         self.nick_name = msg[0][:string.find(msg[0],"!")]
@@ -69,7 +72,7 @@ class IRCLogBot:
 
 
 if __name__== "__main__":
-    bot = IRCLogBot('irc.freenode.net', 6667, 'mks_test067', '#ubuntu-pune')
+    bot = IRCLogBot('irc.freenode.net', 6667, 'RHLogger', '#ubuntu-pune')
     bot.irc_con()
     bot.irc_login()
     bot.irc_join()
