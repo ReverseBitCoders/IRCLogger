@@ -48,6 +48,13 @@ class IRCLogBot:
 
       if msg[0] == "PING":
         self.irc_send_command("PONG %s" % msg[1])
+
+      # Handle private messages to bot
+      if ('PRIVMSG' == msg[1]  and self.NICKNAME == msg[2] ) or ('PRIVMSG' == msg[1] and self.LOGCHANNEL == msg[2] and self.NICKNAME == string.strip(msg[3], ':,')):
+        self.nick_name = string.lstrip(msg[0][:string.find(msg[0],"!")], ':')
+        self.privmsg = ":Heya there! I'm LoggerBot, Do Not Disturb Me!"
+        self.irc_send_command("PRIVMSG %s %s" % (self.nick_name, self.privmsg))
+
       if msg[1] == "PRIVMSG" and msg[2] == self.LOGCHANNEL:
         self.logfile = open("/tmp/channel.log", "a+")
         self.nick_name = msg[0][:string.find(msg[0],"!")]
