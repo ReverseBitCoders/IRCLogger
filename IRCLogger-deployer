@@ -1,13 +1,13 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import IRCLogger
 import sys
 
-if len(sys.argv)!=3:
+if len(sys.argv) != 3:
 	print "Usage: ./IRCLogger-deployer <server> <channel>"
 	exit(1)
 
-bot = IRCLogger.IRCLogBot(sys.argv[1], 6667, 'RHLogger2',"#"+sys.argv[2])
+bot = IRCLogger.IRCLogBot(sys.argv[1], 6667, 'RHLogger',"#"+sys.argv[2])
 bot.irc_con()
 bot.irc_login()
 bot.irc_join()
