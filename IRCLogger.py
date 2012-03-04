@@ -70,11 +70,3 @@ class IRCLogBot:
     self.irc_logout()
     sys.exit(0)
 
-
-if __name__== "__main__":
-    bot = IRCLogBot('irc.freenode.net', 6667, 'RHLogger', '#ubuntu-pune')
-    bot.irc_con()
-    bot.irc_login()
-    bot.irc_join()
-    bot.start_logging()
-
