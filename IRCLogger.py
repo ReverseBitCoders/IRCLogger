@@ -4,6 +4,11 @@ import socket
 import string
 import signal
 import sys
+from time import gmtime, strftime
+from datetime import datetime
+from dateutil import tz
+
+
 
 class IRCLogBot:
 
@@ -62,9 +67,26 @@ class IRCLogBot:
         self.logfile = open("/tmp/channel.log", "a+")
         self.nick_name = msg[0][:string.find(msg[0],"!")]
 
+        timenow = self.convert_utc2local(strftime("%Y-%m-%d %H:%M:%S", gmtime()), 'Asia/Kolkata')
         message = ' '.join(msg[3:])
-        self.logfile.write(string.lstrip(self.nick_name, ':') + ' -> '     + string.lstrip(message, ':') + '\n')
+        self.logfile.write(timenow + " " + string.lstrip(self.nick_name, ':') + ' -> '     + string.lstrip(message, ':') + '\n')
         self.logfile.flush()
+
+  def convert_utc2local(self, time2convert, convert2):
+    from_zone = tz.gettz('UTC')
+    to_zone = tz.gettz(convert2)
+
+    from_zone = tz.tzutc()
+    to_zone = tz.tzlocal()
+
+    utc = datetime.strptime(time2convert, '%Y-%m-%d %H:%M:%S')
+
+    utc = utc.replace(tzinfo=from_zone)
+
+    central = utc.astimezone(to_zone)
+    timenow = central.isoformat()[:10] + " " + central.isoformat()[11:-6]
+    return timenow
+
 
   def stop_logging(self, signal, frame):
     print "\nStopping logging!"
