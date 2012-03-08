@@ -64,6 +64,7 @@ class IRCLogBot:
 
         message = ' '.join(msg[3:])
         self.logfile.write(string.lstrip(self.nick_name, ':') + ' -> '     + string.lstrip(message, ':') + '\n')
+        self.logfile.flush()
 
   def stop_logging(self, signal, frame):
     print "\nStopping logging!"
